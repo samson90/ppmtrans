@@ -1,0 +1,39 @@
+Assignment 3 Design Document
+Howard Kim and Cole Zuber
+
+Part A -  
+1. Same as the previous assignment
+2. Same as the previous assignment
+3. Same as the previous assignment
+4. We will represent the 2d array of height h and width w as a single uarray of length w x h.
+Invariants:
+The (i,j)th element is the ([i/b]*b^2 + [j/b]*b*w + b*[j%b] + i%b) element
+in the single uarray, where b is the block size.
+i must not be greater than w, and j must not be greater than h.
+5. Same as the previous assignment.
+6. Same as the previous assignment.
+7. Same as the previous assignment.
+
+Part C -
+1. Image transformation using two versions of 2d arrays.
+2. Pbm images of varying sizes.
+3. Pbm files of the translated images.
+4. Each translation will have its own function. Each type of array will have its own function for each tranlsation.
+5. - The 2d array.
+   - The width and height of the 2d array.
+   - The coordinates and the index of target pixel.
+   - The block size of the blocked 2d array.
+6. - Our coordinate to index equation.
+   - The algorithms for rotating 90, 180, and 270 degrees and flipping vertically,
+     horizontally, and diagonally.
+7. 2d grid.
+8. See part A for representation of blocked 2d array.
+9. See part A #4 for the invariant of blocked 2d array. 
+   Loop Invariants:
+       -Row-major - All pixels in rows above the current pixel and all pixels in the same row and left of the current pixel have been transposed.
+       -Col-major - All pixels in colums to the left of the current pixel and all pixels in the same column and above the current pixel have been transposed.
+       -Block-major - All pixels in blocks above the current row of blocks and
+all pixels in the blocks to the left of the current block have been transposed.
+Furthermore, all pixels in the same block that are in rows above the current
+pixel, as well as pixels to the left of the current pixel and are in the same row,
+have all been transposed.

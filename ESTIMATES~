@@ -1,0 +1,65 @@
+ESTIMATES
+Howard Kim & Cole Zuber
+
+Part D, 1.4
+1. Blocked access 90, blocked access 180, column major 180
+4. Row major access 90, column major access 90
+6. Row major access 180
+
+The hit rate for blocked access 90 and 180 will be (blocksize^2-1)/blocksize,
+and the hit rate for column major access 180 will be (height-1)/height, which 
+are all very close to 1 and negligibly different provided that column and
+blocksize^2 are similar in size. This is because blocked access loads data from
+localized blocks that are all loaded into the cache simultaneously, so after 
+the initial compulsory miss for both the original image's pixel location and 
+the target's pixel location, the rest of the block is all a hit, for both 90
+degree and 180 degree rotations. For column major, since the width of our
+UArray2 is the number of UArrays and the height is the length of the UArrays,
+we have column localization; that is, all of the columns are blocked together
+in memory. Therefore after the initial compulsory miss for the original
+image's pixel location and the target pixel's location, every other rotation
+in that column will have both the original and the target return a hit.
+
+The hit rate for row major access 90 and column major access 90 will be
+negligibly less than .5. This is because for row major 90, every single load 
+will be a miss in the original image but after the compulsory miss from the 
+target image, the rest of the column in the target image will all be hits. 
+Conversely, in column major 90 every load after the compulsory miss in a 
+column from the original image will be a hit, and every single load from the 
+target image will be a miss.
+
+The hit rate for row major access 180 will be 0. The loads in both the image
+and the target will all be misses, since UArray2 is localized in columns and we
+are accessing the images by rows, for a 0% hit rate.
+
+
+
+
+Kind of rotation             | a/s |  m  | d/s |  c  |  l* |  hr* |  s* |  hr*|
+_______________________________________________________________________________
+180-degree row-major         |  6  |  0  |  0  |  2  |  4  |  0   |  2  |  0  |
+_______________________________________________________________________________
+180-degree column-major      |  6  |  0  |  0  |  2  |  4  |  ~1  |  2  |  ~1 |
+_______________________________________________________________________________
+180-degree block-major       |  10 |  10 |  8  |  4  |  4  |  ~1  |  2  |  ~1 |
+_______________________________________________________________________________
+90-degree row-major          |  4  |  0  |  0  |  2  |  4  |  ~.5 |  2  |  ~.5|
+_______________________________________________________________________________
+90-degree column-major       |  4  |  0  |  0  |  2  |  4  |  ~.5 |  2  |  ~.5|_______________________________________________________________________________
+90-degree block-major        |  8  |  10 |  8  |  4  |  4  |  ~1  |  2  |  ~1 |
+_______________________________________________________________________________
+
+*We only counted pixels for load, load hit rate, store, and store hit rate, as
+other data being loaded and stored would distract from the relevant hit rates.
+
+
+1. 180 degree column major
+2. 90 degree block major
+3. 180 degree block major
+4. 90 degree row major, 90 degree column major
+6. 180 degree row major
+
+We are assuming that a missed store or load costs roughly 10x a hit store or
+load.
+Additionally, 1-3 have a very small difference between them, but the difference
+between 3 and 4, as well as the difference between 4 and 6, is large.
